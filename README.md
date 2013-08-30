@@ -84,8 +84,8 @@ Use associations across models.
     angular.module('PostsCtrl', []).
       controller('PostsCtrl', function($scope, Post, User) {
         
-        $scope.users = User.query();
-        $scope.posts = $scope.users[0].posts().query({page: 1});
+        $scope.user = User.query()[0];
+        $scope.posts = $scope.user.posts().query({page: 1});
         
       });
       
