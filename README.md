@@ -1,8 +1,22 @@
 firebase-resource
 =================
 
-Angular wrapper for Firebase in the style of ng-resource and active-record
+Angular wrapper for Firebase in the style of ng-resource and active-record. 
 
+*this is a very early release so please report any strangeness or suggestions*
+
+#### Features
+
+* Encapsulates Firebase to prevent dependency in controllers. Designed to be a drop-in replacement for ng-resource.
+* Handles associations using foreign-key references, following the tactics outlined [here](https://www.firebase.com/blog/2013-04-12-denormalizing-is-normal.html)
+* Automatically timestamps objects when saving and updating
+* Handles pagination
+* Stores resources in memory to prevent having to request data from Firebase as often
+
+planned features
+* Store resources in localStorage or indexedDB
+* Advanced querying options including searching
+* Remove reliance on Firebase and make it compatible with any realtime backend
 
 ####Getting Started
 Include firebase-resource.js in your index.html file. Suggest creating a services folder.
@@ -129,3 +143,20 @@ Define lifecycle callbacks within the model definition:
         return Post;
         
       });
+      
+      
+Instance Methods:
+
+* save() // saves resource to Firebase and returns a promise that is resolved upon success
+* delete() // delets resource from local stores and Firebase. Returns a promise that is resolved on success
+* getTimestamp(attr) // returns a javascript date of the provided timestamp. Accepts "created_at" or "updated_at"
+
+Class Methods:
+
+* getName() // returns the result of the firebase name() function
+* getPath() // returns the result of the firebase path() function
+* clearAll() // clears all resources out of memory
+* find(id) // returns a resource from memory for a given id, but will not go to Firebase for it
+* findAsync(id) // returns a resource from memory if available or Firebase if not. Returns a promise.
+* all() // returns all resources in memory. options include limit and parent.
+* query() // establishes firebase listeners for the resource given a set of options and stores results in resource stores.
