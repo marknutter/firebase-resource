@@ -28,10 +28,65 @@ Create a resource using the resource factory defined in firebase-resource (again
           }
         );
         
+        return Post;
+        
       });
-      
+
 Define options for the resource. These include
 
 * path - this is the actual Firebase path of the resource in question. 
 * hasMany - an array of associations. These are other models defined as firebase-resources.
-* perPage - how many results are retrieved per page
+* perPage - how many results are retrieved per page.
+* limit - used to limit number of results coming back from a query. Redundant when using pagination.
+* belongsTo - determines whether a resource is defined within the context of a parent resource.
+
+Inject the resource into controllers where needed
+
+    angular.module('PostsCtrl', []).
+      controller('PostsCtrl', function($scope, Post) {
+        
+        $scope.posts = Post.query({page: 1});
+        
+      });
+
+Use associations across models.
+
+
+    angular.module('User', ['firebaseResource']).
+      factory('User', function (firebaseResource) {
+      
+        var User = firebaseResource(
+          {
+            path: 'users',
+            hasMany: ['Post']
+          }
+        );
+        
+        return User;
+        
+      });
+      
+    angular.module('Post', ['firebaseResource']).
+      factory('Post', function (firebaseResource) {
+      
+        var Post = firebaseResource(
+          {
+            path: 'posts',
+            belongsTo: true,
+            perPage: 10
+          }
+        );
+        
+        return Post;
+        
+      });
+      
+    angular.module('PostsCtrl', []).
+      controller('PostsCtrl', function($scope, Post, User) {
+        
+        $scope.users = User.query();
+        $scope.posts = $scope.users[0].posts().query({page: 1});
+        
+      });
+      
+      
