@@ -49,7 +49,7 @@ Inject the resource into controllers where needed
         
       });
 
-Use associations across models.
+Defining and using associations:
 
 
     angular.module('User', ['firebaseResource']).
@@ -90,3 +90,42 @@ Use associations across models.
       });
       
       
+Creating content in context of an assocation:
+
+    var post = user.posts().new({content: 'hello world!'});
+    post.save().
+    then(function() {
+      // do something
+     })
+     
+Define lifecycle callbacks within the model definition:
+
+
+    angular.module('Post', ['firebaseResource']).
+      factory('Post', function (firebaseResource) {
+      
+        var Post = firebaseResource(
+          {
+            path: 'posts',
+          }
+        );
+        
+        Post.prototype.init = function(error) {
+            // happens when model is instantiated from Firebase data
+        };
+        
+        Post.prototype.afterCreate = function(error) {
+            // happens only the first time an object is added to Firebase
+        };
+        
+        Post.prototype.beforeSave = function(error) {
+            // happens immediately before saving data to Firebase
+        };
+        
+        Post.prototype.afterSave = function(error) {
+            // happens after data is written to Firebase
+        };
+        
+        return Post;
+        
+      });
