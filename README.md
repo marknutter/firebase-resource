@@ -23,6 +23,11 @@ Include firebase-resource.js in your index.html file. Suggest creating a service
 
     <script src="/services/firebase_resource.js"></script>
     
+firebase-resource requires a firebase module be injected into it. So define one thusly somewhere in your project:
+
+    angular.module('exampleFirebase', []).
+        value('firebase', (new Firebase('https://example.firebaseio.com/')));
+    
 firebase-resource assumes you are defining your models as separate modules, much like ng-resource assumes. 
 Inject firebase-resource into your where you might otherwise inject ng-resource.
 
