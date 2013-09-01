@@ -27,6 +27,19 @@ firebase-resource requires a firebase module be injected into it. So define one 
 
     angular.module('exampleFirebase', []).
         value('firebase', (new Firebase('https://example.firebaseio.com/')));
+        
+firebase-resource relies on the existence of a safeApply method on $rootScope. In one of your controllers, define safeApply:
+
+    $rootScope.safeApply = function(fn) {
+      var phase = this.$root.$$phase;
+      if(phase == '$apply' || phase == '$digest') {
+        if(fn && (typeof(fn) === 'function')) {
+          fn();
+        }
+      } else {
+        this.$apply(fn);
+      }
+    }; 
     
 firebase-resource assumes you are defining your models as separate modules, much like ng-resource assumes. 
 Inject firebase-resource into your where you might otherwise inject ng-resource.
