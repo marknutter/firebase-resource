@@ -1,6 +1,6 @@
 angular.module('firebaseResource', []).
 
-factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebase) {
+factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $filter, $q, firebase) {
 
 
   function firebaseResourceFactory(opts) {
@@ -71,7 +71,7 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
                           var priority = parentRels.val() ? Object.keys(parentRels.val()).length : 1;
                           firebase.child(parent_rels_path + obj.id).setWithPriority(true, priority, function(error) {
                             if (error) {
-                              console.log('something went wrong: ' + error);
+                              $log.info('something went wrong: ' + error);
                             } else {
                                deferred.resolve(_this);
                                $rootScope.safeApply();
@@ -105,18 +105,18 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
         var total = Object.keys(parent.rels[Resource.getName()]).length;
         var end = total-perPage*(page-1);
         var start = total-perPage*page;
-        console.log("start: " + start + ", end: " + end);
+        $log.info("start: " + start + ", end: " + end);
         start = start < 1 ? 1 : start; // start cannot be less than 1;
         end = end < start ? start : end; // end cannot be less than start;
         if (page == 1) {
           var query = firebase.child(path).startAt(start);
-          console.log('no end');
+          $log.info('no end');
         } else {
           var query = firebase.child(path).endAt(end).startAt(start);
         }
 
         path += "?page=" + page;
-        console.log("start: " + start + ", end: " + end + ", path:" +path);
+        $log.info("start: " + start + ", end: " + end + ", path:" +path);
         return query;
       } else {
         return false;
@@ -132,7 +132,7 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
         listenerPaths[path] = true;
 
         query.on('child_added', function(snapshot) {
-          console.log('child_added');
+          $log.info('child_added');
 
           if (opts.parent) {
             firebase.child(Resource.getPath() + "/" + snapshot.name()).once('value', function(snap) {
@@ -157,7 +157,7 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
         });
 
         resourceRef.on('child_removed', function(snapshot) {
-          console.log('child_removed');
+          $log.info('child_removed');
           removeResource(snapshot);
           if (opts.parent) {
             refreshRels(opts.parent);
@@ -166,7 +166,7 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
         });
 
         query.on('child_changed', function(snapshot) {
-          console.log('child_changed');
+          $log.info('child_changed');
           updateResource(snapshot);
           $rootScope.safeApply();
         });
@@ -274,7 +274,7 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
     Resource.findAsync = function(id) {
       var deferred = $q.defer();
       if (map[id]) {
-        setTimeout(function() {
+        $timeout(function() {
           $rootScope.safeApply(function() {
             deferred.resolve(map[id]);
           })
@@ -382,10 +382,10 @@ factory('firebaseResource', function($injector, $rootScope, $filter, $q, firebas
 
 
     // lifecycle callbacks - override in model
-    Resource.prototype.init = function() { console.log('initializing resource') }
-    Resource.prototype.beforeSave = function() { console.log('before save resource') }
-    Resource.prototype.afterSave = function() { console.log('after save resource') }
-    Resource.prototype.afterCreate = function() { console.log('after create resource') }
+    Resource.prototype.init = function() { $log.info('initializing resource') }
+    Resource.prototype.beforeSave = function() { $log.info('before save resource') }
+    Resource.prototype.afterSave = function() { $log.info('after save resource') }
+    Resource.prototype.afterCreate = function() { $log.info('after create resource') }
 
 
     return Resource;
