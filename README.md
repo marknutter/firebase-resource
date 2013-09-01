@@ -12,6 +12,7 @@ Angular wrapper for Firebase in the style of ng-resource and active-record.
 * Automatically timestamps objects when saving and updating
 * Handles pagination
 * Stores resources in memory to prevent having to request data from Firebase as often
+* Allows assigning of local attributes. Any attribute with a leading underscore will *not* be persisted to Firebase
 
 planned features
 * Store resources in localStorage or indexedDB
