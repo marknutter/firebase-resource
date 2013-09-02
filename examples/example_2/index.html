@@ -1,0 +1,23 @@
+<html ng-app="app">
+<head>
+
+</head>
+
+<body ng-controller="MainCtrl">
+
+  <h3 ng-click="test()"> {{user.name}} posts</h3>
+  <button ng-click="addPost()" >add post</button>
+  <ul>
+    <li ng-repeat="post in user.posts().all()">
+      {{post.content}}
+    </li>
+  </ul>
+
+<script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script src="../../lib/angular.js"></script>
+<script src="../../firebase-resource.js"></script>
+<script src="../shared.js"></script>
+<script src="example_2.js"></script>
+</body>
+
+</html>
