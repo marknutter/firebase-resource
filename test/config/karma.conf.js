@@ -5,6 +5,7 @@ files = [
   JASMINE_ADAPTER,
   'lib/angular.js',
   'test/lib/angular-mocks.js',
+  'test/lib/custom-mocks.js',
   'firebase-resource.js',
   'test/firebase-resource-spec.js'
 ];

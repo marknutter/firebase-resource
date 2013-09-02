@@ -7,45 +7,11 @@ describe('Service: firebaseResource', function () {
       instance,
       snapshot,
       resource,
-      rootScope,
-      deferred,
-      firebase,
-      firebaseEvents = {},
-      q,
+      firebase = customMocks.Firebase.new,
       scope;
 
-  function Firebase() {};
-  Firebase.prototype.child = jasmine.createSpy('child').andReturn(new Firebase());
-  Firebase.prototype.path = "/test";
-  Firebase.prototype.limit = jasmine.createSpy('limit').andReturn(new Firebase());
-  Firebase.prototype.name = jasmine.createSpy('name').andReturn('test');
-  Firebase.prototype.on = jasmine.createSpy('on').andCallFake(function(event, callback) { firebaseEvents['on_' + event] = callback});
-  Firebase.prototype.once = jasmine.createSpy('once').andCallFake(function(value, callback) { firebaseEvents['once'] = callback});
-  Firebase.prototype.push = jasmine.createSpy('push').andReturn(new Firebase());
-  Firebase.prototype.update = jasmine.createSpy('update').andCallFake(function(obj, callback) { callback() });
-  Firebase.prototype.remove = jasmine.createSpy('remove');
-  Firebase.prototype.set = jasmine.createSpy('set').andCallFake(function(bool, callback) { callback()});
-  Firebase.prototype.ServerValue = {TIMESTAMP: {".sv": "timestamp"}};
 
-  rootScope = {
-    safeApply: jasmine.createSpy('safeApply').andCallFake(function(callback) { if (callback) {callback()}})
-  }
 
-  deferred = {
-    resolve: jasmine.createSpy('resolve'),
-    reject: jasmine.createSpy('reject'),
-    promise: {
-      then: function(callback) {
-        callback();
-      }
-    }
-  }
-
-  q = {
-    defer: function() {
-      return deferred;
-    }
-  }
 
   firebase = new Firebase();
 
@@ -61,8 +27,8 @@ describe('Service: firebaseResource', function () {
     module(function($provide) {
       $provide.value('firebase', firebase);
       $provide.value('Bar', Bar)
-      $provide.value('$rootScope', rootScope)
-      $provide.value('$q', q)
+      $provide.value('$rootScope', customMocks.rootScope)
+      $provide.value('$q', customMocks.q)
     });
 
     inject(function($injector) {
@@ -148,10 +114,10 @@ describe('Service: firebaseResource', function () {
 
       it('should add nested resource to parent resource on child_added event', function() {
         firebase.child.reset();
-        firebaseEvents.on_child_added(snapshot);
+        customMocks.Firebase.on_child_added(snapshot);
         expect(firebase.child).toHaveBeenCalledWith('/test/2');
         expect(firebase.once).toHaveBeenCalledWith('value', jasmine.any(Function));
-        firebaseEvents.once(snapshot);
+        customMocks.Firebase.once(snapshot);
         expect(resource._bars[0]).toBe(Bar.find(2))
         expect(Bar.find(2).bing).toEqual('bow');
         expect(Bar.find(2).id).toEqual('2');
@@ -221,23 +187,23 @@ describe('Service: firebaseResource', function () {
 
     it('should add a resource on child_added event', function() {
       expect(Model.all().length).toBe(0);
-      firebaseEvents.on_child_added(snapshot);
+      customMocks.Firebase.on_child_added(snapshot);
       expect(Model.all().length).toBe(1);
     })
 
     it('should update a resource on child_changed event', function() {
-      firebaseEvents.on_child_added(snapshot);
+      customMocks.Firebase.on_child_added(snapshot);
       expect(Model.find(1).foo).toBe('bar');
       snapshot.data.foo = "baz";
-      firebaseEvents.on_child_changed(snapshot);
+      customMocks.Firebase.on_child_changed(snapshot);
       expect(Model.find(1).foo).toBe('baz');
       expect(Model.all().length).toBe(1);
     })
 
     it('should remove a resource on child_removed event', function() {
-      firebaseEvents.on_child_added(snapshot);
+      customMocks.Firebase.on_child_added(snapshot);
       expect(Model.all().length).toBe(1);
-      firebaseEvents.on_child_removed(snapshot);
+      customMocks.Firebase.on_child_removed(snapshot);
       expect(Model.all().length).toBe(0);
     })
 
@@ -246,11 +212,11 @@ describe('Service: firebaseResource', function () {
       expect(Model.find(1)).toBe(undefined);
       expect(firebase.once).toHaveBeenCalled();
       expect(ref.then).toEqual(jasmine.any(Function));
-      firebaseEvents.once(snapshot);
+      customMocks.Firebase.once(snapshot);
       expect(Model.find(1).foo).toBe('bar');
 
       firebase.once.reset();
-      firebaseEvents.on_child_added(snapshot);
+      customMocks.Firebase.on_child_added(snapshot);
       Model.findAsync(1);
       expect(firebase.once).not.toHaveBeenCalled();
       expect(Model.find(1).foo).toBe('bar');
@@ -300,8 +266,8 @@ describe('Service: firebaseResource', function () {
         expect(instance.afterCreate).toHaveBeenCalled();
         expect(instance.beforeSave).toHaveBeenCalled();
         expect(instance.id).toBe('foos');
-        expect(deferred.resolve).toHaveBeenCalled();
-        deferred.resolve.reset();
+        expect(customMocks.deferred.resolve).toHaveBeenCalled();
+        customMocks.deferred.resolve.reset();
       });
 
       it('should be deletable', function() {

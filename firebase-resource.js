@@ -231,9 +231,9 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
     }
 
     function timestamp(resource) {
-      resource.updated_at = firebase.ServerValue.TIMESTAMP
+      resource.updated_at = Firebase.ServerValue.TIMESTAMP
       if (!resource.created_at) {
-        resource.created_at = firebase.ServerValue.TIMESTAMP
+        resource.created_at = Firebase.ServerValue.TIMESTAMP
       }
     }
 
