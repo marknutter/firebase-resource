@@ -117,8 +117,10 @@ Defining and using associations:
     angular.module('PostsCtrl', []).
       controller('PostsCtrl', function($scope, Post, User) {
         
-        $scope.user = User.query()[0];
-        $scope.posts = $scope.user.posts().query({page: 1});
+        User.query() // query() sets up the proper Firebase listeners for the model. Does not return the actual objects.
+        $scope.user = User.all()[0]; // all() returns the actual objects pulled down from Firebase for this model
+        $scope.user.posts().query({page: 1});
+        $scope.posts = $scope.user.posts().all();
         
       });
       
