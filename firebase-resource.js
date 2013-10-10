@@ -8,9 +8,7 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
     var map = {};
     var list = [];
     var listenerPaths = {};
-    if (!opts.perPage) {
-      options.perPage = 10;
-    }
+    options.perPage = opts.perPage ? opts.perPage : 10;
     var globalLimit = opts.limit ? opts.limit : 1000;
     if (opts.path) {
       var resourceRef = firebase.child(opts.path);
@@ -98,8 +96,8 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
       }
     }
 
-    function getPagingQuery(parent, path, page, perPage) {
-      var perPage = perPage ? perPage : options.perPage;
+    function getPagingQuery(parent, path, page) {
+      var perPage = options.perPage;
       if (parent && page) {
         ensureRels(parent, Resource.getName());
         var total = Object.keys(parent.rels[Resource.getName()]).length;
@@ -125,7 +123,7 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
 
     function setListeners(path, opts, callback) {
       var opts = opts ? opts : {};
-      var query = getPagingQuery(opts.parent, path, opts.page, opts.perPage);
+      var query = getPagingQuery(opts.parent, path, opts.page);
       if (!query) { query = firebase.child(path); };
       if (opts.page) { path += "?page=" + opts.page; };
       if (!listenerPaths[path]) {
