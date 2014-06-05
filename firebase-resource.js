@@ -3,6 +3,17 @@ angular.module('firebaseResource', []).
 factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $filter, $q, firebase) {
 
 
+  $rootScope.safeApply = function(fn) {
+    var phase = this.$root.$$phase;
+    if(phase == '$apply' || phase == '$digest') {
+      if(fn && (typeof(fn) === 'function')) {
+        fn();
+      }
+    } else {
+      this.$apply(fn);
+    }
+  };
+
   function firebaseResourceFactory(opts) {
     var options = opts ? opts : {};
     var map = {};
@@ -347,7 +358,7 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
           if (error) {
             deferred.reject(error);
           } else {
-            addResource(_this);
+            // addResource(_this);
             if (_this._parent_rels_path && newResource) {
               firebase.child(_this._parent_rels_path).once('value', function(parentRels) {
                 var priority = parentRels.val() ? Object.keys(parentRels.val()).length : 1;
