@@ -1,0 +1,22 @@
+{
+  "name": "firebase-resource",
+  "main": "firebase-resource.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/marknutter/firebase-resource",
+  "authors": [
+    "Mark Nutter <marknutter@gmail.com>"
+  ],
+  "description": "An active-record inspired angularJS wrapper for Firebase",
+  "keywords": [
+    "angular",
+    "firebase"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
