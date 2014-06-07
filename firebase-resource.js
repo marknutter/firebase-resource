@@ -314,12 +314,10 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
     }
 
     Resource.query = function(opts, callback) {
-      var deferred = $q.defer();
       var opts = opts ? opts : {}
       var ret = list;
       var path = opts.path ? opts.path : Resource.getPath();
       setListeners(path, opts, callback);
-      return deferred.promise;
     }
 
 

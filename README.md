@@ -1,7 +1,7 @@
 firebase-resource
 =================
 
-Angular wrapper for Firebase in the style of ng-resource and active-record. 
+Angular wrapper for Firebase in the style of ng-resource and active-record.
 
 *this is a very early release so please report any strangeness or suggestions*
 
@@ -23,12 +23,12 @@ planned features
 Include firebase-resource.js in your index.html file. Suggest creating a services folder.
 
     <script src="/services/firebase_resource.js"></script>
-    
+
 firebase-resource requires a firebase module be injected into it. So define one thusly somewhere in your project:
 
     angular.module('exampleFirebase', []).
         value('firebase', (new Firebase('https://example.firebaseio.com/')));
-        
+
 firebase-resource relies on the existence of a safeApply method on $rootScope. In one of your controllers, define safeApply:
 
     $rootScope.safeApply = function(fn) {
@@ -40,34 +40,34 @@ firebase-resource relies on the existence of a safeApply method on $rootScope. I
       } else {
         this.$apply(fn);
       }
-    }; 
-    
-firebase-resource assumes you are defining your models as separate modules, much like ng-resource assumes. 
+    };
+
+firebase-resource assumes you are defining your models as separate modules, much like ng-resource assumes.
 Inject firebase-resource into your where you might otherwise inject ng-resource.
 
     angular.module('Post', ['firebaseResource']).
       factory('Post', function (firebaseResource) {
 
       });
-      
+
 Create a resource using the resource factory defined in firebase-resource (again, like you would using ng-resource).
 
     angular.module('Post', ['firebaseResource']).
       factory('Post', function (firebaseResource) {
-      
+
         var Post = firebaseResource(
           {
             path: 'posts'
           }
         );
-        
+
         return Post;
-        
+
       });
 
 Define options for the resource. These include
 
-* path - this is the actual Firebase path of the resource in question. 
+* path - this is the actual Firebase path of the resource in question.
 * hasMany - an array of associations. These are other models defined as firebase-resources.
 * perPage - how many results are retrieved per page.
 * limit - used to limit number of results coming back from a query. Redundant when using pagination.
@@ -77,9 +77,9 @@ Inject the resource into controllers where needed
 
     angular.module('PostsCtrl', []).
       controller('PostsCtrl', function($scope, Post) {
-        
+
         $scope.posts = Post.query({page: 1});
-        
+
       });
 
 Defining and using associations:
@@ -87,21 +87,21 @@ Defining and using associations:
 
     angular.module('User', ['firebaseResource']).
       factory('User', function (firebaseResource) {
-      
+
         var User = firebaseResource(
           {
             path: 'users',
             hasMany: ['Post']
           }
         );
-        
+
         return User;
-        
+
       });
-      
+
     angular.module('Post', ['firebaseResource']).
       factory('Post', function (firebaseResource) {
-      
+
         var Post = firebaseResource(
           {
             path: 'posts',
@@ -109,22 +109,22 @@ Defining and using associations:
             perPage: 10
           }
         );
-        
+
         return Post;
-        
+
       });
-      
+
     angular.module('PostsCtrl', []).
       controller('PostsCtrl', function($scope, Post, User) {
-        
+
         User.query() // query() sets up the proper Firebase listeners for the model. Does not return the actual objects.
         $scope.user = User.all()[0]; // all() returns the actual objects pulled down from Firebase for this model
         $scope.user.posts().query({page: 1});
         $scope.posts = $scope.user.posts().all();
-        
+
       });
-      
-      
+
+
 Creating content in context of an assocation:
 
     var post = user.posts().new({content: 'hello world!'});
@@ -132,40 +132,40 @@ Creating content in context of an assocation:
     then(function() {
       // do something
      })
-     
+
 Define lifecycle callbacks within the model definition:
 
 
     angular.module('Post', ['firebaseResource']).
       factory('Post', function (firebaseResource) {
-      
+
         var Post = firebaseResource(
           {
             path: 'posts',
           }
         );
-        
+
         Post.prototype.init = function(error) {
             // happens when model is instantiated from Firebase data
         };
-        
+
         Post.prototype.afterCreate = function(error) {
             // happens only the first time an object is added to Firebase
         };
-        
+
         Post.prototype.beforeSave = function(error) {
             // happens immediately before saving data to Firebase
         };
-        
+
         Post.prototype.afterSave = function(error) {
             // happens after data is written to Firebase
         };
-        
+
         return Post;
-        
+
       });
-      
-      
+
+
 Instance Methods:
 
 * save() // saves resource to Firebase and returns a promise that is resolved upon success
