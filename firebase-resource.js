@@ -174,7 +174,7 @@ factory('firebaseResource', function($injector, $rootScope, $log, $timeout, $fil
           $rootScope.safeApply();
         });
 
-        query.on('child_changed', function(snapshot) {
+        resourceRef.on('child_changed', function(snapshot) {
           $log.info('child_changed');
           updateResource(snapshot);
           $rootScope.safeApply();
