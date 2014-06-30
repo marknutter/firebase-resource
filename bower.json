@@ -1,7 +1,7 @@
 {
   "name": "firebase-resource",
   "main": "firebase-resource.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/marknutter/firebase-resource",
   "authors": [
     "Mark Nutter <marknutter@gmail.com>"
