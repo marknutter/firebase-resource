@@ -19,7 +19,7 @@ planned features
 * Advanced querying options including searching
 * Remove reliance on Firebase and make it compatible with any realtime backend
 
-####Getting Started
+#### Getting Started
 Include firebase-resource.js in your index.html file. Suggest creating a services folder.
 
     <script src="/services/firebase_resource.js"></script>
